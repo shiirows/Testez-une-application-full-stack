@@ -37,4 +37,44 @@ describe('RegisterComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // Add this test
+  it('should have a form with 4 controls', () => {
+    expect(component.form.contains('email')).toBeTruthy();
+    expect(component.form.contains('firstName')).toBeTruthy();
+    expect(component.form.contains('lastName')).toBeTruthy();
+    expect(component.form.contains('password')).toBeTruthy();
+  });
+
+  // Add this test
+  it('should make the email control required', () => {
+    const control = component.form.get('email');
+    control?.setValue('');
+    expect(control?.valid).toBeFalsy();
+  });
+
+  // Add this test
+  it('should make the firstName control required', () => {
+    const control = component.form.get('firstName');
+    control?.setValue('');
+    expect(control?.valid).toBeFalsy();
+  });
+
+  // Add this test
+  it('should make the lastName control required', () => {
+    const control = component.form.get('lastName');
+    control?.setValue('');
+    expect(control?.valid).toBeFalsy();
+  });
+
+ 
+  it('should make the password control required', () => {
+    const control = component.form.get('password');
+    control?.setValue('');
+    expect(control?.valid).toBeFalsy();
+  });
+
+
+
+
 });
