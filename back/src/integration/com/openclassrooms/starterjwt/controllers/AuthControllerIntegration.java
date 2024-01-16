@@ -39,7 +39,18 @@ class AuthControllerIntegration {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
 
+    @Test
+    void authenticationBadCredentials() throws Exception {
+        // ce test permet de simuler une requête POST sur l'URL /api/auth/login avec un body contenant un username et un password qui retourne une erreur
+        this.mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"email\": \"noyoga@studio.com\", \"password\": \"test!1234\" }")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
@@ -47,10 +58,23 @@ class AuthControllerIntegration {
         // ce test permet de simuler une requête POST sur l'URL /api/auth/register avec un body contenant un username, un email et un password qui retourne un token
         this.mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"yoga\", \"email\": \"yoga@test.com\", \"password\": \"yoga\"}")
+                        .content("{ \"email\": \"descartes_37@test.com\", \"password\": \"test!1234\", \"firstName\": \"René\", \"lastName\": \"descartes\" }")
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
+    @Test
+void registerUserBadRequestEmail()  throws Exception {
+        // ce test permet de simuler une requête POST sur l'URL /api/auth/register avec un email existant
+        this.mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"email\": \"descartes_37@test.com\", \"password\": \"test!1234\", \"firstName\": \"René\", \"lastName\": \"descartes\" }")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
 }
