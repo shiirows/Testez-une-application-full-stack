@@ -14,10 +14,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
-
 import java.time.Instant;
 import java.util.Date;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -68,7 +66,14 @@ class SessionControllerIntegration {
                         .header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
 
+    @Test
+    void findAllNoToken() throws Exception {
+        // ce mock permet de simuler une requête GET sur l'URL /api/session sans token
+        this.mockMvc.perform(get("/api/session"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
@@ -79,7 +84,6 @@ class SessionControllerIntegration {
         sessionDto.setDescription("this is a new session");
         sessionDto.setDate(Date.from(Instant.now()));
         sessionDto.setTeacher_id(1L);
-
 
         this.mockMvc.perform(post("/api/session")
                         .header("Authorization", "Bearer " + jwt)
@@ -92,20 +96,54 @@ class SessionControllerIntegration {
     }
 
     @Test
+    void createNoToken() throws Exception {
+        // ce mock permet de simuler une requête POST sur la création d'une session sans token
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setName("new session");
+        sessionDto.setDescription("this is a new session");
+        sessionDto.setDate(Date.from(Instant.now()));
+        sessionDto.setTeacher_id(1L);
+
+        this.mockMvc.perform(post("/api/session")
+                        .contentType("application/json")
+                        .content(new ObjectMapper().writeValueAsString(sessionDto))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
     void update() throws Exception {
         // ce mock permet de simuler une requête PUT sur la mise à jour d'une session avec un token valide
         SessionDto sessionDto = new SessionDto();
         sessionDto.setName("new session");
         sessionDto.setDescription("this is a new session");
         sessionDto.setDate(Date.from(Instant.now()));
-        sessionDto.setTeacher_id(2L);
+        sessionDto.setTeacher_id(1L);
 
-        this.mockMvc.perform(post("/api/session")
+        this.mockMvc.perform(put("/api/session/1")
                         .header("Authorization", "Bearer " + jwt)
                         .contentType("application/json")
                         .content(new ObjectMapper().writeValueAsString(sessionDto))
                         .accept("application/json"))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void updateNoToken() throws Exception {
+        // ce mock permet de simuler une requête PUT sur la mise à jour d'une session sans token
+        SessionDto sessionDto = new SessionDto();
+        sessionDto.setName("new session");
+        sessionDto.setDescription("this is a new session");
+        sessionDto.setDate(Date.from(Instant.now()));
+        sessionDto.setTeacher_id(1L);
+
+        this.mockMvc.perform(put("/api/session/1")
+                        .contentType("application/json")
+                        .content(new ObjectMapper().writeValueAsString(sessionDto))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
 
@@ -118,6 +156,13 @@ class SessionControllerIntegration {
                 .andDo(print());
 
     }
+    @Test
+    void saveNoToken() throws Exception {
+        // ce mock permet de simuler une requête DELETE sur la suppression d'une session sans token
+        this.mockMvc.perform(delete("/api/session/1"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
 
     @Test
     void participate() throws Exception {
@@ -129,6 +174,22 @@ class SessionControllerIntegration {
     }
 
     @Test
-    void noLongerParticipate() {
+    void participateNoToken() throws Exception {
+        // ce mock permet de simuler une requête POST sur la participation d'une session sans token
+        this.mockMvc.perform(post("/api/session/1/participate/1"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
+
+
+    @Test
+    void noLongerParticipate() throws Exception {
+        // ce mock permet de simuler une requête DELETE sur la non participation d'une session avec un token valide
+        this.mockMvc.perform(delete("/api/session/1/participate/1")
+                        .header("Authorization", "Bearer " + jwt))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
 }
