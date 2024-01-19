@@ -4,8 +4,12 @@ describe('Login spec', () => {
 
     cy.intercept('POST', '/api/auth/login', {
       body: {
-        message: 'Login successfull'
-      },
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true
+    },
     })
 
     cy.intercept(
