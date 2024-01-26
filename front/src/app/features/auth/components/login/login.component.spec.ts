@@ -17,9 +17,22 @@ import { Router } from '@angular/router';
 import { fakeAsync, tick } from '@angular/core/testing';
 
 
+
+
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  let router: Router;
+
+  const mockUserSession = {
+    id:'1',
+    email: 'johndoe@gmail.com',
+    lastName: 'John',
+    firstName: 'Doe',
+    admin: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -40,6 +53,12 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  router = {
+    navigate: jest.fn()
+  } as any;
+
+  
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -75,28 +94,5 @@ describe('LoginComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-/* ce test permet de vérifier que la redirection vers /sessions a lieu si le login réussit
-  it('should redirect to /sessions', fakeAsync(() => {
-    const router = TestBed.inject(Router);
-    const spy = jest.spyOn(router, 'navigate');
-    const authService = TestBed.inject(AuthService);
-    jest.spyOn(authService, 'login').mockReturnValue(of());
-    component.submit();
-    tick();
-    expect(spy).toHaveBeenLastCalledWith('/sessions');
-  }));
-
-
-
-  // ce test permet de vérifier que la redirection vers /sessions n'a pas lieu si le login échoue
-  it('should not redirect to /sessions if login failed', fakeAsync(() => {
-    const router = TestBed.inject(Router);
-    const spy = jest.spyOn(router, 'navigate');
-    const authService = TestBed.inject(AuthService);
-    jest.spyOn(authService, 'login').mockReturnValue(throwError({}));
-    component.submit();
-    tick();
-    expect(spy).not.toHaveBeenCalledWith(['/sessions']);
-  })); */
 
 });
