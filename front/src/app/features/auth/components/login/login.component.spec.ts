@@ -24,15 +24,7 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let router: Router;
 
-  const mockUserSession = {
-    id:'1',
-    email: 'johndoe@gmail.com',
-    lastName: 'John',
-    firstName: 'Doe',
-    admin: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

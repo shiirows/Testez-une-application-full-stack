@@ -7,12 +7,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { expect } from '@jest/globals';
+import { of, throwError } from 'rxjs';
 
 import { RegisterComponent } from './register.component';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { AuthService } from '../../services/auth.service';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+  let httpTesting:HttpTestingController
+  let service: AuthService;
+
+  const path = 'api/teacher';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -73,6 +80,16 @@ describe('RegisterComponent', () => {
     control?.setValue('');
     expect(control?.valid).toBeFalsy();
   });
+
+  it ('should register user with error if the register request fails', () => {
+    const authService = TestBed.inject(AuthService);
+    const spy = jest.spyOn(authService, 'register').mockReturnValue(of());
+    component.submit();
+
+    expect(spy).toHaveBeenCalled();
+
+  });
+
 
 
 
