@@ -7,15 +7,15 @@ import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 class SessionServiceTest {
 
-
+    @InjectMocks
     private SessionService sessionService;
 
     @Mock
@@ -34,8 +34,6 @@ class SessionServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-
 
     @Test
     void create() {
@@ -109,41 +107,44 @@ class SessionServiceTest {
     @Test
     void update() {
 
-        Session session = new Session();
-        session.setId(1L);
+        Session session = Session.builder().description("description").date(new Date()).name("name").id(1L).build();
+
         when(sessionRepository.save(any(Session.class))).thenReturn(session);
         SessionService sessionService = new SessionService(sessionRepository, userRepository);
         Session updatedSession = sessionService.update(1L, session);
         assertThat(updatedSession.getId()).isEqualTo(1L);
     }
 
-  /*    @Test
+   @Test
     void participate() {
-      Session session = new Session();
-        session.setId(1L);
 
-        User user = new User();
-        user.setId(1L);
+      Session session = Session.builder().description("description").date(new Date()).name("name").id(1L).users(new ArrayList<>()).build();
+      when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
 
-        when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+       User user = User.builder().id(2L).email("toto.com").firstName("toto").lastName("tata").admin(false).password("").build();
+       when(userRepository.findById(2L)).thenReturn(Optional.of(user));
 
-        SessionService sessionService = new SessionService(sessionRepository, userRepository);
-        sessionService.participate(1L, 1L);
+         SessionService sessionService = new SessionService(sessionRepository, userRepository);
+            sessionService.participate(session.getId(), user.getId());
+            assertThat(session.getUsers()).hasSize(1);
 
-        assertThat(session.getUsers()).contains(user);
 
-        // Verify that the findById method on sessionRepository was called once with the correct argument
-        verify(sessionRepository, times(1)).findById(1L);
-
-        // Verify that the findById method on userRepository was called once with the correct argument
-        verify(userRepository, times(1)).findById(1L);
-    } */
+    }
 
 
     @Test
     void noLongerParticipate() {
 
+        Session session = Session.builder().description("description").date(new Date()).name("name").id(1L).users(new ArrayList<>()).build();
+        when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
+
+        User user = User.builder().id(2L).email("toto.com").firstName("toto").lastName("tata").admin(false).password("").build();
+        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+
+        SessionService sessionService = new SessionService(sessionRepository, userRepository);
+        sessionService.participate(session.getId(), user.getId());
+        sessionService.noLongerParticipate(session.getId(), user.getId());
+        assertThat(session.getUsers()).hasSize(0);
 
 
     }
