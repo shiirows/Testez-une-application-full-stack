@@ -259,6 +259,7 @@ class UserTest {
                 .password("password")
                 .admin(true)
                 .createdAt(date)
+                .updatedAt(LocalDateTime.now())
                 .build();
         assertEquals(user.getId(), 1L);
         assertEquals(user.getEmail(), "toto@gmail.com");
@@ -272,7 +273,15 @@ class UserTest {
     // faire un test User(String, String, String, String, boolean)
     @Test
     void user() {
-        User user = new User("toto.com", "toto", "tata", "password", true);
+        User user = User.builder()
+                .email("toto.com")
+                .lastName("toto")
+                .firstName("tata")
+                .password("password")
+                .admin(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
         assertEquals(user.getEmail(), "toto.com");
         assertEquals(user.getLastName(), "toto");
         assertEquals(user.getFirstName(), "tata");

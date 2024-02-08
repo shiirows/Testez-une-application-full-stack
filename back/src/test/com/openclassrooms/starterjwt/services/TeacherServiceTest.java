@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +45,11 @@ class TeacherServiceTest {
 
     @Test
     void findById() {
-
         Teacher teacher = new Teacher();
         teacher.setId(1L);
-        when(teacherService.findById(1L)).thenReturn(teacher);
+
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        TeacherService teacherService = new TeacherService(teacherRepository);
         Teacher foundTeacher = teacherService.findById(1L);
         assertThat(foundTeacher.getId()).isEqualTo(1L);
     }

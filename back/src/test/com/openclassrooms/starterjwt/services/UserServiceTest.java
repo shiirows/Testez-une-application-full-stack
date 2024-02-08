@@ -39,16 +39,26 @@ class UserServiceTest {
         UserService userService = new UserService(userRepository);
         userService.delete(1L);
         verify(userRepository, times(1)).deleteById(1L);
-
     }
+
 
     @Test
     void findById() {
         User user = new User();
         user.setId(1L);
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         UserService userService = new UserService(userRepository);
         User foundUser = userService.findById(1L);
         assertThat(foundUser.getId()).isEqualTo(1L);
     }
+
+    @Test
+    void findByBadId() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        UserService userService = new UserService(userRepository);
+        User foundUser = userService.findById(1L);
+        assertThat(foundUser).isNull();
+    }
+
 }

@@ -102,7 +102,24 @@ class AuthControllerTest {
 
     @Test
     void registerUser() {
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setEmail("toto.com");
+        signupRequest.setFirstName("toto");
+        signupRequest.setLastName("tata");
+        signupRequest.setPassword("password");
 
+        when(userRepository.existsByEmail("toto.com")).thenReturn(false);
+        when(passwordEncoder.encode("password")).thenReturn("password");
+        when(userRepository.save(any(User.class))).thenReturn(User.builder().id(1L).email("toto.com").firstName("toto")
+                .lastName("tata").password("password").admin(false).build());
+
+        AuthController authController = new AuthController(authenticationManager, passwordEncoder, jwtUtils,
+                userRepository);
+        ResponseEntity<?> response = authController.registerUser(signupRequest);
+        MessageResponse responseBody = (MessageResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User registered successfully!", responseBody.getMessage());
 
     }
 }

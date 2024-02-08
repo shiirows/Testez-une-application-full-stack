@@ -1,5 +1,7 @@
 package com.openclassrooms.starterjwt.services;
 
+import com.openclassrooms.starterjwt.exception.BadRequestException;
+import com.openclassrooms.starterjwt.exception.NotFoundException;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
@@ -128,8 +131,42 @@ class SessionServiceTest {
             sessionService.participate(session.getId(), user.getId());
             assertThat(session.getUsers()).hasSize(1);
 
+    }
+   @Test
+    void participateNotFound() {
+
+       when(sessionRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+
+       User user = User.builder().id(2L).email("toto.com").firstName("toto").lastName("tata").admin(false).password("").build();
+       when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+
+       SessionService sessionService = new SessionService(sessionRepository, userRepository);
+
+         Assertions.assertThrows(NotFoundException.class, () -> {
+              sessionService.participate(1L, 2L);
+         });
 
     }
+
+    @Test
+    void participateBadRequest() {
+
+        Session session = Session.builder().description("description").date(new Date()).name("toto").id(1L).users(new ArrayList<>()).build();
+        when(sessionRepository.findById(1L)).thenReturn(Optional.of(session));
+
+        User user = User.builder().id(2L).email("toto.com").firstName("toto").lastName("tata").admin(false).password("").build();
+        when(userRepository.findById(2L)).thenReturn(Optional.of(user));
+
+        session.getUsers().add(user);
+
+        SessionService sessionService = new SessionService(sessionRepository, userRepository);
+
+        Assertions.assertThrows(BadRequestException.class, () -> {
+            sessionService.participate(1L, 2L);
+        });
+
+    }
+
 
 
     @Test
