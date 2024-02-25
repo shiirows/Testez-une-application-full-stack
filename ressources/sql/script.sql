@@ -1,4 +1,4 @@
-CREATE TABLE `TEACHERS` (
+CREATE TABLE `test`.`TEACHERS` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `last_name` VARCHAR(40),
   `first_name` VARCHAR(40),
@@ -6,17 +6,17 @@ CREATE TABLE `TEACHERS` (
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `SESSIONS` (
+CREATE TABLE `test`.`SESSIONS` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(50),
   `description` VARCHAR(2000),
   `date` TIMESTAMP,
-  `teacher_id` int,
+  `teacher_id` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `USERS` (
+CREATE TABLE `test`.`USERS` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `last_name` VARCHAR(40),
   `first_name` VARCHAR(40),
@@ -27,20 +27,18 @@ CREATE TABLE `USERS` (
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `PARTICIPATE` (
+CREATE TABLE `test`.`PARTICIPATE` (
   `user_id` INT, 
   `session_id` INT
 );
 
-ALTER TABLE `SESSIONS` ADD FOREIGN KEY (`teacher_id`) REFERENCES `TEACHERS` (`id`);
-ALTER TABLE `PARTICIPATE` ADD FOREIGN KEY (`user_id`) REFERENCES `USERS` (`id`);
-ALTER TABLE `PARTICIPATE` ADD FOREIGN KEY (`session_id`) REFERENCES `SESSIONS` (`id`);
+ALTER TABLE `test`.`SESSIONS` ADD FOREIGN KEY (`teacher_id`) REFERENCES `test`.`TEACHERS` (`id`);
+ALTER TABLE `test`.`PARTICIPATE` ADD FOREIGN KEY (`user_id`) REFERENCES `test`.`USERS` (`id`);
+ALTER TABLE `test`.`PARTICIPATE` ADD FOREIGN KEY (`session_id`) REFERENCES `test`.`SESSIONS` (`id`);
 
-INSERT INTO TEACHERS (first_name, last_name)
+INSERT INTO `test`.`TEACHERS` (first_name, last_name)
 VALUES ('Margot', 'DELAHAYE'),
        ('Hélène', 'THIERCELIN');
 
-
-INSERT INTO USERS (first_name, last_name, admin, email, password)
-VALUES ('Admin', 'Admin', true, 'yoga@studio.com', '$2a$10$.Hsa/ZjUVaHqi0tp9xieMeewrnZxrZ5pQRzddUXE/WjDu2ZThe6Iq'); 
-
+INSERT INTO `test`.`USERS` (first_name, last_name, admin, email, password)
+VALUES ('Admin', 'Admin', true, 'yoga@studio.com', '$2a$10$.Hsa/ZjUVaHqi0tp9xieMeewrnZxrZ5pQRzddUXE/WjDu2ZThe6Iq');

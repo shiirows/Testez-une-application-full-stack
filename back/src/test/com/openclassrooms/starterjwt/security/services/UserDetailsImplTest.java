@@ -136,7 +136,6 @@ class UserDetailsImplTest {
 
     @Test
     void builder() {
-
     }
 
     @Test
