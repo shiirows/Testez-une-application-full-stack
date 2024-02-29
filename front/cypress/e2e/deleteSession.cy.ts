@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe('Login spec', () => {
   beforeEach(() => {
     cy.intercept('POST', '/api/auth/login', {
@@ -74,21 +76,16 @@ describe('Login spec', () => {
         }
       },);
   
-      cy.intercept('GET', '/api/teacher', {
-        body: [
+      cy.intercept('GET', '/api/teacher/1', {
+        body: 
           {
             id: 1,
-            firstName: 'Margot',
-            lastName: 'DELAHAYE',
+            firstName: 'Rene',
+            lastName: 'Decarts',
           }
-        ]
+      
       },);
 
-      cy.intercept('DELETE', '/api/session/1', {statusCode: 200}).as('updateSession');
-
-
-      cy.contains('button', 'Detail').click();
-      cy.contains('button', 'Delete').click();
 
       cy.intercept('GET', '/api/session', {
         body: [
@@ -105,9 +102,19 @@ describe('Login spec', () => {
         ]
       });
   
-  
-    
+
+      cy.intercept('DELETE', '/api/session/1', {statusCode: 200}).as('updateSession');
+
+
+      cy.contains('button', 'Detail').click();
+      cy.contains('button', 'Delete').click();
+
+      cy.get('@updateSession').its('response.statusCode').should('eq', 200);
+
+      cy.url().should('include', '/sessions');
 
       });
+
+
 
 });

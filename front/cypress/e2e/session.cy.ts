@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 describe('Login spec', () => {
     beforeEach(() => {
       cy.intercept('POST', '/api/auth/login', {
@@ -97,8 +98,9 @@ describe('Login spec', () => {
       cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
       cy.get('@session');
       cy.contains('Detail').click();
-      cy.wait('@teacher1');
       cy.get('button[color="warn"]').should('contain', 'Delete');
       cy.get('div[class="description"]').should('contain', 'Cours de yoga');
     });
+
+
   });

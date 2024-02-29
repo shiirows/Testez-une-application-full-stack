@@ -49,6 +49,17 @@ describe('Session with admin credential', () => {
           users: []
         }]
       });
+
+      cy.intercept('GET', '/api/session/1', {
+        body: {
+          id: 1,
+          name: 'Workout',
+          description: 'A workout session',
+          date: '2023-12-30T00:00:00.000+00:00',
+          teacher_id: 1,
+          users: []
+        }
+      },);
   
   
       cy.url().should('include', '/sessions');
@@ -59,9 +70,19 @@ describe('Session with admin credential', () => {
       cy.get('textarea[formControlName=description]').type("New session for philosopher");
       cy.get('button[type=submit]').click()
       cy.url().should('include', '/sessions');
+
+      cy.get('mat-card-title').should('contain', 'mea culpa');
+      cy.get('mat-card-content').should('contain', 'New session for philosopher');
+      cy.get('.mat-card-subtitle').should('contain', '15, 2024');
+    
+      cy.scrollTo('bottom'); 
+      cy.get('.mat-card-actions > :nth-child(1)').click();
+
+      cy.url().should('include', '1');
+      
+
+
     })
-
-
 
 
   })

@@ -82,7 +82,7 @@ He will generate a rapport in 'Testez-une-application-full-stack\back\target\jac
 2. Run test End to End
 
    ```bash
-   npm run e2e
+   npm run e2e:ci
 
 For create coverage, this report is in "/Testez-une-application-full-stack/front/coverage/lcov-report/index.html" 
 

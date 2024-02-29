@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe('Login spec', () => {
     beforeEach(() => {
       cy.intercept('POST', '/api/auth/login', {
@@ -45,7 +47,8 @@ describe('Login spec', () => {
         cy.visit('/sessions/detail/1')
   
         cy.get('input[formControlName=email]').type("renedecarts@gmail.com")
-        cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+        cy.get('input[formControlName=password]').type(`${"test!1234"}`)
+        cy.get('.mat-raised-button').should("be.enabled").click();
   
         cy.get('@session');
   
@@ -113,9 +116,9 @@ describe('Login spec', () => {
               }
             ]
           },);
-      
           cy.get('button[type=submit]').click();
-
         });
 
+
+       
   });
